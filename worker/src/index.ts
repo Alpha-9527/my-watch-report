@@ -175,8 +175,11 @@ async function route(request: Request, env: Env): Promise<Response> {
 
   if (url.pathname === "/api/status") {
     const token = await env.DB.prepare("SELECT expires_at FROM oauth_tokens WHERE id=1").first<any>();
-    const state = await env.DB.prepare("SELECT last_sync_at, last_error FROM sync_state WHERE id=1").first<any>();
-    return json({ connected: !!token, tokenExpiresAt: token?.expires_at ?? null, ...state });
+    const state = await env.DB.prepare("SELECT last_sync_at FROM sync_state WHERE id=1").first<any>();
+    return json({
+      connected: !!token,
+      last_sync_at: state?.last_sync_at ?? null
+    });
   }
 
   if (url.pathname === "/api/sync" && request.method === "POST") {
