@@ -155,7 +155,7 @@ export default function App() {
 
           <button
             className="primary"
-            onClick={sync}
+            onClick={() => void sync()}
             disabled={busy || !status?.connected}
           >
             <RefreshCw size={16} className={busy ? 'spin' : ''} />
