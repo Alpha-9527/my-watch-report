@@ -1,0 +1,17 @@
+name = "my-watch-report-api"
+main = "src/index.ts"
+compatibility_date = "2026-11-02"
+
+[vars]
+TRAKT_CLIENT_ID = "PUT_YOUR_TRAKT_CLIENT_ID_HERE"
+TRAKT_REDIRECT_URI = "https://YOUR-WORKER.workers.dev/api/auth/callback"
+APP_ORIGIN = "https://YOUR-PAGES-PROJECT.pages.dev"
+INITIAL_SYNC_PAGES = "5"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "my-watch-report"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"
+
+[triggers]
+crons = ["0 * * * *"]
