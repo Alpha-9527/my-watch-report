@@ -1,6 +1,4 @@
-
-import { useEffect, useState } from 'react';
-import type { FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import {
   Activity, CalendarDays, Clapperboard, Clock3, Film,
   RefreshCw, Star, Tv, Wifi, WifiOff
@@ -31,25 +29,16 @@ export default function App() {
     () => sessionStorage.getItem(TOKEN_KEY) || ''
   );
   const [tokenInput, setTokenInput] = useState('');
-
+  const [showTokenInput, setShowTokenInput] = useState(false);
+  
   const year = new Date().getFullYear();
 
-  async function load(token = appToken) {
-    if (!token) return;
-
+    async function load() {
     try {
-      const headers = {
-        Authorization: `Bearer ${token}`,
-      };
-
       const [s, t] = await Promise.all([
-        fetch(`${API}/api/summary?year=${year}`, { headers }),
-        fetch(`${API}/api/status`, { headers }),
+        fetch(`${API}/api/summary?year=${year}`),
+        fetch(`${API}/api/status`),
       ]);
-
-      if (s.status === 401 || t.status === 401) {
-        throw new Error('访问密钥不正确，请检查后重新输入');
-      }
 
       if (!s.ok || !t.ok) {
         throw new Error('无法连接观影报告 API，请检查 Worker 部署状态');
@@ -63,7 +52,13 @@ export default function App() {
     }
   }
 
-  async function sync() {
+  async function sync(token = appToken) {
+    if (!token) {
+      setShowTokenInput(true);
+      setError('');
+      return;
+    }
+
     setBusy(true);
     setError('');
 
@@ -71,20 +66,26 @@ export default function App() {
       const r = await fetch(`${API}/api/sync`, {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${appToken}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
       const d = await r.json();
 
       if (r.status === 401) {
-        throw new Error('访问密钥不正确，请重新输入');
+        sessionStorage.removeItem(TOKEN_KEY);
+        setAppToken('');
+        setTokenInput('');
+        setShowTokenInput(true);
+        setError('访问密钥不正确，请重新输入');
+        return;
       }
 
       if (!r.ok) {
         throw new Error(d.error || '同步失败');
       }
 
+      setShowTokenInput(false);
       await load();
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
@@ -102,19 +103,21 @@ export default function App() {
     sessionStorage.setItem(TOKEN_KEY, token);
     setAppToken(token);
     setTokenInput('');
+    setShowTokenInput(false);
+
+    void sync(token);
   }
 
-  function logout() {
+  function clearToken() {
     sessionStorage.removeItem(TOKEN_KEY);
     setAppToken('');
-    setSummary(null);
-    setStatus(null);
-    setError('');
+    setTokenInput('');
+    setShowTokenInput(false);
   }
 
   useEffect(() => {
-    if (appToken) load(appToken);
-  }, [appToken]);
+    void load();
+  }, []);
 
   const totals = summary?.totals || {};
 
@@ -128,38 +131,6 @@ export default function App() {
     },
     { label: '观看事件', value: totals.plays ?? '—', icon: Clapperboard },
   ];
-
-  if (!appToken) {
-    return (
-      <main className="shell">
-        <section className="connect" style={{ marginTop: '15vh' }}>
-          <div>
-            <b>MY WATCH REPORT</b>
-            <p>请输入访问密钥，进入你的私人观影档案。</p>
-            <form onSubmit={submitToken}>
-              <input
-                type="password"
-                value={tokenInput}
-                onChange={e => setTokenInput(e.target.value)}
-                placeholder="请输入访问密钥"
-                autoComplete="current-password"
-                style={{
-                  width: '100%',
-                  boxSizing: 'border-box',
-                  padding: '12px',
-                  margin: '12px 0',
-                  borderRadius: '8px',
-                }}
-              />
-              <button className="primary" type="submit">
-                进入观影报告
-              </button>
-            </form>
-          </div>
-        </section>
-      </main>
-    );
-  }
 
   return (
     <main className="shell">
@@ -191,9 +162,11 @@ export default function App() {
             {busy ? '同步中' : '立即同步'}
           </button>
 
-          <button className="ghost" onClick={logout} title="退出">
-            退出
-          </button>
+                    {appToken && (
+            <button className="ghost" onClick={clearToken} title="清除同步密钥">
+              清除密钥
+            </button>
+          )}
         </div>
       </header>
 
@@ -212,7 +185,43 @@ export default function App() {
       </section>
 
       {error && <div className="alert">{error}</div>}
+            {showTokenInput && (
+        <section className="connect">
+          <div>
+            <b>输入同步密钥</b>
+            <p>此密钥仅用于手动同步 Trakt 观看记录。</p>
 
+            <form onSubmit={submitToken}>
+              <input
+                type="password"
+                value={tokenInput}
+                onChange={e => setTokenInput(e.target.value)}
+                placeholder="请输入同步密钥"
+                autoComplete="current-password"
+                style={{
+                  width: '100%',
+                  boxSizing: 'border-box',
+                  padding: '12px',
+                  margin: '12px 0',
+                  borderRadius: '8px',
+                }}
+              />
+
+              <button className="primary" type="submit">
+                验证并同步
+              </button>
+
+              <button
+                className="ghost"
+                type="button"
+                onClick={() => setShowTokenInput(false)}
+              >
+                取消
+              </button>
+            </form>
+          </div>
+        </section>
+      )}
       {!status?.connected && (
         <section className="connect">
           <div>
