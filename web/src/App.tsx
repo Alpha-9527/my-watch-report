@@ -1,5 +1,6 @@
 
 import { useEffect, useState } from 'react';
+import type { FormEvent } from 'react';
 import {
   Activity, CalendarDays, Clapperboard, Clock3, Film,
   RefreshCw, Star, Tv, Wifi, WifiOff
@@ -92,7 +93,7 @@ export default function App() {
     }
   }
 
-  function submitToken(e: React.FormEvent) {
+  function submitToken(e: FormEvent) {
     e.preventDefault();
 
     const token = tokenInput.trim();
