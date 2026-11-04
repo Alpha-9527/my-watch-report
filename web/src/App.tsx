@@ -19,6 +19,191 @@ type Summary = {
   recent: any[];
 };
 
+
+function PrivacyPolicy() {
+  return (
+    <main
+      style={{
+        maxWidth: 820,
+        margin: '0 auto',
+        padding: '48px 24px',
+        color: '#e8eaf0',
+        lineHeight: 1.8,
+        fontFamily: 'inherit',
+      }}
+    >
+      <a
+        href="/"
+        style={{ color: '#e85b4a', textDecoration: 'none' }}
+      >
+        ← 返回观影报告
+      </a>
+
+      <h1 style={{ marginTop: 32 }}>Privacy Policy</h1>
+      <p style={{ color: '#9299a8' }}>
+        My Watch Report · Last updated: November 4, 2026
+      </p>
+
+      <h2>1. About My Watch Report</h2>
+      <p>
+        My Watch Report is a personal web application designed
+        to import, organize, and visualize a user's own Trakt
+        watch history.
+      </p>
+      <p>
+        The website is publicly accessible. Information displayed
+        in viewing reports may therefore be visible to anyone
+        who visits the website.
+      </p>
+      <p>
+        My Watch Report uses Trakt but is not endorsed or certified
+        by Trakt.
+      </p>
+
+      <h2>2. Information We Collect</h2>
+      <p>
+        When connected to Trakt, the application may access and
+        store information from the authorized account, including:
+      </p>
+      <ul>
+        <li>Watched movies and TV episodes.</li>
+        <li>Watch history and viewing dates.</li>
+        <li>Personal ratings.</li>
+        <li>Movie and TV show information used in reports.</li>
+        <li>OAuth access tokens and refresh tokens.</li>
+      </ul>
+      <p>We do not collect your Trakt password.</p>
+
+      <h2>3. How We Use Information</h2>
+      <p>Information is used solely to:</p>
+      <ul>
+        <li>Generate viewing reports and statistics.</li>
+        <li>Display watch history and personal ratings.</li>
+        <li>Calculate yearly and monthly viewing summaries.</li>
+        <li>Synchronize report data with Trakt.</li>
+      </ul>
+      <p>
+        We do not sell Trakt data or provide it to other services
+        for their own use.
+      </p>
+
+      <h2>4. Public Visibility</h2>
+      <p>
+        My Watch Report is designed as a publicly accessible
+        viewing-report website. Information displayed on report
+        pages may be viewed by other visitors.
+      </p>
+      <p>
+        Do not connect an account if you do not want the resulting
+        viewing information to be publicly visible.
+      </p>
+
+      <h2>5. Data Storage and Retention</h2>
+      <p>
+        Application data, including viewing records and OAuth
+        tokens, is stored in a Cloudflare D1 database.
+      </p>
+      <p>
+        Data is retained for as long as it is needed to provide
+        the application's features, unless deletion is requested.
+        There is currently no automatic data-retention period.
+      </p>
+      <p>
+        Deletion requests are handled manually by the project
+        maintainer.
+      </p>
+
+      <h2>6. Third-Party Services</h2>
+      <ul>
+        <li>
+          <strong>Trakt:</strong> Provides authorized watch-history
+          and account data through its API.
+        </li>
+        <li>
+          <strong>Cloudflare:</strong> Hosts the application and
+          provides database infrastructure.
+        </li>
+      </ul>
+      <p>
+        These services are subject to their own privacy policies
+        and terms.
+      </p>
+
+      <h2>7. Disconnecting Trakt and Deleting Data</h2>
+      <p>
+        You can revoke My Watch Report's access through your
+        Trakt account's connected applications or authorized
+        applications settings.
+      </p>
+      <p>
+        Revoking access does not automatically delete information
+        already stored in the application's database.
+      </p>
+      <p>
+        To request deletion of stored viewing records and OAuth
+        tokens, submit a request through the project's GitHub
+        Issues page:
+      </p>
+      <p>
+        <a
+          href="https://github.com/Alpha-9527/my-watch-report/issues"
+          target="_blank"
+          rel="noreferrer"
+          style={{ color: '#e85b4a' }}
+        >
+          GitHub Issues — My Watch Report
+        </a>
+      </p>
+      <p>
+        Please do not include passwords, access tokens, or other
+        sensitive information in a public GitHub issue.
+      </p>
+
+      <h2>8. Security</h2>
+      <p>
+        Reasonable measures are used to protect application data
+        and OAuth credentials. However, no method of storage or
+        transmission over the Internet can be guaranteed to be
+        completely secure.
+      </p>
+
+      <h2>9. Changes to This Policy</h2>
+      <p>
+        This Privacy Policy may be updated when the application
+        or its data practices change. The latest version will
+        be published on this page.
+      </p>
+
+      <h2>10. Contact</h2>
+      <p>
+        For questions, feedback, or data deletion requests,
+        please use the project's GitHub Issues page:
+      </p>
+      <a
+        href="https://github.com/Alpha-9527/my-watch-report/issues"
+        target="_blank"
+        rel="noreferrer"
+        style={{ color: '#e85b4a' }}
+      >
+        https://github.com/Alpha-9527/my-watch-report/issues
+      </a>
+
+      <footer
+        style={{
+          marginTop: 48,
+          paddingTop: 20,
+          borderTop: '1px solid #303746',
+          color: '#9299a8',
+        }}
+      >
+        My Watch Report uses Trakt but is not endorsed or
+        certified by Trakt.
+      </footer>
+    </main>
+  );
+}
+
+
 export default function App() {
   const [summary, setSummary] = useState<Summary | null>(null);
   const [status, setStatus] = useState<any>(null);
@@ -118,7 +303,9 @@ export default function App() {
   useEffect(() => {
     void load();
   }, []);
-
+  if (window.location.pathname === '/privacy') {
+  return <PrivacyPolicy />;
+}
   const totals = summary?.totals || {};
 
   const cards = [
