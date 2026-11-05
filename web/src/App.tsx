@@ -363,7 +363,7 @@ export default function App() {
             <span className="dot" /> YOUR YEAR IN FILM
           </div>
           <h1>把看过的故事，<em>好好收藏。</em></h1>
-          <p>你的私人观影档案与年度回顾。</p>
+          <p>私人观影档案与年度回顾。</p>
         </div>
         <div className="year">
           {year}
@@ -412,7 +412,7 @@ export default function App() {
       {!status?.connected && (
         <section className="connect">
           <div>
-            <b>连接你的 Trakt 账户</b>
+            <b>连接 Trakt 账户</b>
             <p>授权后即可导入观看历史，后台每小时自动同步。</p>
           </div>
           <a className="primary linkbtn" href={`${API}/api/auth/start`}>
