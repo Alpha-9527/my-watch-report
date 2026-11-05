@@ -531,7 +531,7 @@ export default function App() {
 
       <footer>
         <a href="https://watch.0x3.im/privacy">Privacy Policy</a>
-        <span>数据Cloudflare D1 数据库中</span>
+        <span>Built with Cloudflare</span>
       </footer>
     </main>
   );
