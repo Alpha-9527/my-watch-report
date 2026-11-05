@@ -530,8 +530,8 @@ export default function App() {
       </section>
 
       <footer>
-        MY WATCH REPORT
-        <span>数据仅保存在你自己的 Cloudflare D1 数据库中</span>
+        <a href="https://watch.0x3.im/privacy">Privacy Policy</a>
+        <span>数据Cloudflare D1 数据库中</span>
       </footer>
     </main>
   );
